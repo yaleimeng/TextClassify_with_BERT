@@ -185,7 +185,7 @@ class SelfProcessor(DataProcessor):
         return examples
 
     def one_example(self, sentence):
-        guid, label = 'pred-0', 'Person'
+        guid, label = 'pred-0', self.labels[0]
         text_a, text_b = sentence, None
         return InputExample(guid=guid, text_a=text_a, text_b=text_b, label=label)
 
@@ -439,7 +439,7 @@ class Bert_Class():
         self.config_file = '/home/chinese_L-12_H-768_A-12/bert_config.json'
         self.init_check = '/home/chinese_L-12_H-768_A-12/bert_model.ckpt'
         self.task = 'FenLei'
-        self.out_dir = 'out722'  # "The output directory where the model checkpoints will be written."
+        self.out_dir = 'output'  # "The output directory where the model checkpoints will be written."
         self.prepare()
 
     def prepare(self):
