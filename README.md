@@ -13,31 +13,33 @@
 
 ## 使用方法：
 0.准备工作
-+ 首先要下载BERT-Base, Chinese[中文模型](https://storage.googleapis.com/bert_models/2018_11_03/chinese_L-12_H-768_A-12.zip)并解压到合适的目录；后面需要作为model_dir配置
-+ 按照本项目data/下的说明，下载新闻数据集，并修改文件名作为数据集。
++ 首先要下载BERT-Base[中文模型](https://storage.googleapis.com/bert_models/2018_11_03/chinese_L-12_H-768_A-12.zip)并解压到合适的目录；后面需要作为model_dir配置。
 1. 单机运行
 + 训练+评估：运行shell命令，实质上是运行train_eval.py并提供一堆参数 </br>
 内容如下：
 > export BERT_BASE_DIR=/home/itibia/chinese_L-12_H-768_A-12   # 这是BERT原始模型所在目录，根据实际修改
 
-> python train_eval.py \</br>
+> python train_eval.py \  </br>
   --task_name cnews \   </br>
   --do_train  \         # 表示执行训练</br>
   --do_eval  \          # 表示执行评估</br>
+  --do_predict false  \    # 表示不执行预测</br>
   --data_dir ./data/ \   # 数据集所在目录</br>
   --vocab_file $BERT_BASE_DIR/vocab.txt \   # Bert词汇表</br>
   --bert_config_file $BERT_BASE_DIR/bert_config.json \  # bert配置文件</br>
   --init_checkpoint $BERT_BASE_DIR/bert_model.ckpt \    # bert检查点</br>
   --max_seq_length 200 \        # 最大序列长度。对于新闻等长文本，可设置大一点。短文本可设短一些</br>
   --train_batch_size 32 \       # batch大小。结合自身GPU算力进行调整。如果训练时提示资源耗尽就调小一点。</br>
-  --learning_rate 3e-5 \  </br>       
+  --learning_rate 3e-5 \  </br>
   --num_train_epochs 5.0 \ </br>
   --output_dir ./output/ \     # 模型输出目录</br>
   --local_rank 3  </br>
-如果上面步骤进展顺利，恭喜，在output/下面已经生成了训练和评估的结果。屏幕上也打印出了评估的准确率
+如果上面步骤进展顺利，恭喜，在output/下面已经生成了训练和评估的结果。屏幕上也打印出了评估的准确率。</br>
+如果仅对test.txt执行预测，只需要把--do_predict 的false去掉，--do_train  与 --do_eval 都删除或者设置为false。
 
 + 测试：运行predict_GPU.py</br>
-首先需要在BertClass类中根据实际情况修改几个成员变量。然后修改自己要测试的问题。</br>
+首先需要在BertClass类中根据实际情况修改init()中定义的几个成员变量。然后修改自己要测试的问题。</br>
+2.使用自己的数据集。重新进行训练和评估。
 
-2. 搭建分类预测服务
+3. 搭建分类预测服务
 + 运行server.py
