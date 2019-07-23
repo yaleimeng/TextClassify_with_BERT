@@ -8,9 +8,13 @@
 ## 与同类代码库相比的亮点：
 - 在自定义Processor类中添加了针对单条文本的处理方法。在常规的针对test数据集的predict方法之外添加了针对单条数据的类别预测方法。
 - 编写了简单的web服务，直接搭建对外服务的API接口。
-- estimator 从 tf.contrib.tpu.TPUEstimator换成 tf.estimator.Estimator，以便在 gpu 上更高效运行。于此同时 model_fn 里tf.contrib.tpu.TPUEstimatorSpec 也修改成 tf.estimator.EstimatorSpec形式，相关调用参数也做了调整。在转换成较普通的 estimator 后便可以使用常用的方式处理，如生成用于部署的 *.pb 文件等。
+- estimator 从 tf.contrib.tpu.TPUEstimator换成 tf.estimator.Estimator，以便在 gpu 上更高效运行。于此同时 model_fn 里tf.contrib.tpu.TPUEstimatorSpec 也修改成 tf.estimator.EstimatorSpec形式，相关调用参数也做了调整。
+- 在转换成较普通的 estimator 后便可以使用常用方式处理，如生成用于部署的 *.pb 文件等。【待完成】
 
 ## 使用方法：
+0.准备工作
++ 首先要下载BERT-Base, Chinese[中文模型](https://storage.googleapis.com/bert_models/2018_11_03/chinese_L-12_H-768_A-12.zip)并解压到合适的目录；后面需要作为model_dir配置
++ 按照本项目data/下的说明，下载新闻数据集，并修改文件名作为数据集。
 1. 单机运行
 + 训练+评估：运行train_eval.py
 + 测试：运行predict_GPU.py
