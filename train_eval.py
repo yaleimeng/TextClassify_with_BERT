@@ -534,6 +534,15 @@ def input_fn_builder(features, seq_length, is_training, drop_remainder):
 
     return input_fn
 
+ def serving_input_receiver_fn():
+    input_ids = tf.placeholder(dtype=tf.int64, shape=[None, FLAGS.max_seq_length], name='input_ids')
+    input_mask = tf.placeholder(dtype=tf.int64, shape=[None, FLAGS.max_seq_length], name='input_mask')
+    segment_ids = tf.placeholder(dtype=tf.int64, shape=[None, FLAGS.max_seq_length], name='segment_ids')
+    label_ids = tf.placeholder(dtype=tf.int64, shape=[None, ], name='unique_ids')
+
+    receive  = {'input_ids': input_ids, 'input_mask': input_mask, 'segment_ids': segment_ids, 'label_ids': label_ids}
+    features = {'input_ids': input_ids, 'input_mask': input_mask, 'segment_ids': segment_ids, "label_ids": label_ids}
+    return tf.estimator.export.ServingInputReceiver(features, receive)
 
 def main(_):
     tf.logging.set_verbosity(tf.logging.INFO)
@@ -594,6 +603,7 @@ def main(_):
             is_training=True,
             drop_remainder=True)
         estimator.train(input_fn=train_input_fn, max_steps=num_train_steps)
+        estimator.export_savedmodel('./', serving_input_receiver_fn)
 
     if FLAGS.do_eval:
         eval_examples = processor.get_dev_examples(FLAGS.data_dir)
