@@ -218,8 +218,7 @@ def convert_single_example(ex_index, example, label_list, max_seq_length, tokeni
             input_ids=[0] * max_seq_length,
             input_mask=[0] * max_seq_length,
             segment_ids=[0] * max_seq_length,
-            label_id=0,
-            is_real_example=False)
+            label_id=0,      is_real_example=False)
 
     label_map = {}
     for (i, label) in enumerate(label_list):
@@ -285,10 +284,8 @@ def convert_single_example(ex_index, example, label_list, max_seq_length, tokeni
         tf.logging.info("label: %s (id = %d)" % (example.label, label_id))
 
     feature = InputFeatures(
-        input_ids=input_ids,
-        input_mask=input_mask,
-        segment_ids=segment_ids,
-        label_id=label_id,
+        input_ids=input_ids,        input_mask=input_mask,
+        segment_ids=segment_ids,    label_id=label_id,
         is_real_example=True)
     return feature
 
@@ -508,18 +505,13 @@ def input_fn_builder(features, seq_length, is_training, drop_remainder):
         # not TPU compatible. The right way to load data is with TFRecordReader.
         d = tf.data.Dataset.from_tensor_slices({
             "input_ids":
-                tf.constant(
-                    all_input_ids, shape=[num_examples, seq_length],
+                tf.constant(  all_input_ids, shape=[num_examples, seq_length],
                     dtype=tf.int32),
             "input_mask":
-                tf.constant(
-                    all_input_mask,
-                    shape=[num_examples, seq_length],
+                tf.constant(  all_input_mask, shape=[num_examples, seq_length],
                     dtype=tf.int32),
             "segment_ids":
-                tf.constant(
-                    all_segment_ids,
-                    shape=[num_examples, seq_length],
+                tf.constant( all_segment_ids,  shape=[num_examples, seq_length],
                     dtype=tf.int32),
             "label_ids":
                 tf.constant(all_label_ids, shape=[num_examples], dtype=tf.int32),
@@ -534,7 +526,7 @@ def input_fn_builder(features, seq_length, is_training, drop_remainder):
 
     return input_fn
 
- def serving_input_receiver_fn():
+def serving_input_receiver_fn():
     input_ids = tf.placeholder(dtype=tf.int64, shape=[None, FLAGS.max_seq_length], name='input_ids')
     input_mask = tf.placeholder(dtype=tf.int64, shape=[None, FLAGS.max_seq_length], name='input_mask')
     segment_ids = tf.placeholder(dtype=tf.int64, shape=[None, FLAGS.max_seq_length], name='segment_ids')
@@ -620,15 +612,11 @@ def main(_):
                         len(eval_examples) - num_actual_eval_examples)
         tf.logging.info("  Batch size = %d", FLAGS.eval_batch_size)
 
-        # This tells the estimator to run through the entire set.
-        eval_steps = None
-        # However, if running eval on the TPU, you will need to specify the  number of steps.
-
         eval_input_fn = file_based_input_fn_builder(
             input_file=eval_file, seq_length=FLAGS.max_seq_length,
             is_training=False, drop_remainder=False)
 
-        result = estimator.evaluate(input_fn=eval_input_fn, steps=eval_steps)
+        result = estimator.evaluate(input_fn=eval_input_fn, )
 
         output_eval_file = os.path.join(FLAGS.output_dir, "eval_results.txt")
         with tf.gfile.GFile(output_eval_file, "w") as writer:
