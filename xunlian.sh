@@ -1,4 +1,4 @@
-export BERT_BASE_DIR=/home/itibia/chinese_L-12_H-768_A-12
+export BERT_BASE_DIR=/home/yourname/chinese_L-12_H-768_A-12
 
 python train_eval.py \
   --task_name cnews \
@@ -11,7 +11,6 @@ python train_eval.py \
   --max_seq_length 150 \
   --train_batch_size 32 \
   --learning_rate 3e-5 \
-  --num_train_epochs 5.0 \
+  --num_train_epochs 2.0 \
   --output_dir ./output/ \
   --local_rank 3
-
