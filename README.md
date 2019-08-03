@@ -9,13 +9,13 @@
 - 在自定义Processor类中添加了针对单条文本的处理方法。在常规的针对test数据集的predict方法之外添加了针对单条数据的类别预测方法。
 - 编写了简单的web服务，直接搭建对外服务的API接口。
 - estimator 从 tf.contrib.tpu.TPUEstimator换成 tf.estimator.Estimator，以便在 gpu 上更高效运行。于此同时 model_fn 里tf.contrib.tpu.TPUEstimatorSpec 也修改成 tf.estimator.EstimatorSpec形式，相关调用参数也做了调整。
-- 在转换成较普通的 estimator 后便可以使用常用方式处理，如生成用于部署的 *.pb 文件等。【待完成】
+- 在转换成较普通的 estimator 后便可以使用常用方式处理，如生成用于部署的 *.pb 文件等。
 
 ## 使用方法：
 0. 准备工作
 + 首先要下载BERT-Base[中文模型](https://storage.googleapis.com/bert_models/2018_11_03/chinese_L-12_H-768_A-12.zip)并解压到合适的目录；后面需要作为model_dir配置。
 1. 单机运行
-+ 在arguments.py中修改运行参数。主要是数据目录、BERT目录、模型目录、序列长度、batch大小、学习率等。
++ 在arguments.py中修改运行参数。主要是**数据目录、BERT目录、模型目录、序列长度、batch大小、学习率**等。
 > 如果仅对test.txt执行预测，只需要把 do_predict 设为True，do_train 与do_eval 设置为false。
 + 训练+评估：运行train_eval.py </br>
 > 如果上面步骤进展顺利，恭喜，在output/下面已经生成了训练和评估的结果。屏幕上也打印出了评估的准确率。</br>
@@ -27,12 +27,12 @@
 + 有pb模型自己使用TensorFlow Serving部署
 4. 关于用bert-base搭建服务的简介
 + 在服务器端、客户端安装：pip install bert-base
-+ 在PB模型所在目录下新建一个 .sh文件，写入以下内容：
-> bert-base-serving-start \
-    -model_dir ./ \   # 训练输出目录【主要是其他Mode用到】。
-    -bert_model_dir F:\chinese_L-12_H-768_A-12   # BERT自身的目录。
-    -model_pb_dir ./ \      # pb模型路径，就填./ 当前目录就行了。。 
-    -mode CLASS       \     # 运行模式，分类就是CLASS
-    -max_seq_len 202  \     # 最大序列长度。要跟训练时参数一致。
++ 在PB模型所在目录下新建一个 *.sh文件，写入以下内容：
+> bert-base-serving-start \ </br>
+    -model_dir ./ \   # 训练输出目录【主要是其他Mode用到】。</br>
+    -bert_model_dir F:\chinese_L-12_H-768_A-12   # BERT自身的目录。</br>
+    -model_pb_dir ./ \      # pb模型路径，就填./ 当前目录就行了。。 </br>
+    -mode CLASS       \     # 运行模式，分类就是CLASS</br>
+    -max_seq_len 200  \     # 最大序列长度。要跟训练时参数一致。</br>
 + 运行编写好的sh 文件，没报错，提示已经开始监听的话就表示服务成功开启。可以使用客户端运行示例了。</br>
 非本机运行的话，构造BertClient时需要设置ip参数，例如BertClient(ip=192.168.20.20 ）。
